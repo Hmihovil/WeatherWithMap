@@ -1,44 +1,44 @@
-package com.example.progforce.MathOperations;
+package com.example.progforce.math_operation;
 
 public class Operations {
 
     public static String getMoth(Integer dOfMonth) {
         String dayOfMonth = new String();
         if (dOfMonth == 0) {
-            dayOfMonth = "January ";
+            dayOfMonth = "January";
         }
         if (dOfMonth == 1) {
-            dayOfMonth = "February ";
+            dayOfMonth = "February";
         }
         if (dOfMonth == 2) {
-            dayOfMonth = "March ";
+            dayOfMonth = "March";
         }
         if (dOfMonth == 3) {
-            dayOfMonth = "April ";
+            dayOfMonth = "April";
         }
         if (dOfMonth == 4) {
-            dayOfMonth = "May ";
+            dayOfMonth = "May";
         }
         if (dOfMonth == 5) {
-            dayOfMonth = "June ";
+            dayOfMonth = "June";
         }
         if (dOfMonth == 6) {
-            dayOfMonth = "July ";
+            dayOfMonth = "July";
         }
         if (dOfMonth == 7) {
-            dayOfMonth = "August ";
+            dayOfMonth = "August";
         }
         if (dOfMonth == 8) {
-            dayOfMonth = "September ";
+            dayOfMonth = "September";
         }
         if (dOfMonth == 9) {
-            dayOfMonth = "October ";
+            dayOfMonth = "October";
         }
         if (dOfMonth == 10) {
-            dayOfMonth = "November ";
+            dayOfMonth = "November";
         }
         if (dOfMonth == 11) {
-            dayOfMonth = "December ";
+            dayOfMonth = "December";
         }
         return dayOfMonth;
     }
@@ -68,6 +68,4 @@ public class Operations {
         }
         return dayOfWeek;
     }
-
-
 }

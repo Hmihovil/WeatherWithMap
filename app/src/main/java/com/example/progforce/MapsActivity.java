@@ -1,18 +1,14 @@
 package com.example.progforce;
 
-import android.content.Context;
+import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ProgressBar;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -20,10 +16,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.annotations.SerializedName;
-
-import butterknife.BindView;
-
 
 public class MapsActivity extends AppCompatActivity implements
         GoogleMap.OnMarkerClickListener,
@@ -33,8 +25,6 @@ public class MapsActivity extends AppCompatActivity implements
 
     private GoogleMap mMap;
     public Marker marker;
-    SearchView sv;
-    Integer i = 0;
     String city;
 
     @Override
@@ -49,41 +39,34 @@ public class MapsActivity extends AppCompatActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-       // LatLng sydney = new LatLng(-34, 151);
         LatLng kiev = new LatLng(50,30);
         marker = mMap.addMarker(new MarkerOptions().position(kiev).draggable(true));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(kiev));
-
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
                 mMap.clear();
                 marker = mMap.addMarker(new MarkerOptions().position(point));
-                LatLng markerLocation = marker.getPosition();
-                double latval = markerLocation.latitude;
-                double lngval = markerLocation.longitude;
             }
         });
-
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
         return true;
     }
+
     @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-    }
+    public void onPointerCaptureChanged(boolean hasCapture) { }
+
     @Override
     public void onMapClick(LatLng place) {
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_menu, menu);
-
         MenuItem search = menu.findItem(R.id.item_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
         search(searchView);
@@ -93,7 +76,6 @@ public class MapsActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.item_search_city) {
             Intent intent = new Intent(this, DetailActivity.class);
             LatLng position = marker.getPosition();
@@ -104,7 +86,6 @@ public class MapsActivity extends AppCompatActivity implements
         if (id == R.id.item_search) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -113,12 +94,12 @@ public class MapsActivity extends AppCompatActivity implements
 
     }
 
-
     private void search(SearchView searchView) {
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+
                 Intent intent = new Intent(getApplicationContext(),OneDayActivity.class);
                 city = searchView.getQuery().toString();
                 intent.putExtra("City", city );

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c3ac3d6dcee8aa7b1b9b95702f817b16",
+    "identityHash": "03e839a28a696a9a08f30648261e9668",
     "entities": [
       {
         "tableName": "weather",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `dataTime` INTEGER NOT NULL, `icon` TEXT, `description` TEXT, `maxTemp` REAL, `minTemp` REAL, `humidity` INTEGER, `pressure` REAL, `wind` REAL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `dataTime` INTEGER NOT NULL, `icon` TEXT, `description` TEXT, `maxTemp` REAL, `minTemp` REAL, `humidity` INTEGER, `pressure` REAL, `wind` REAL, `city` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -61,73 +61,11 @@
             "columnName": "wind",
             "affinity": "REAL",
             "notNull": false
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "id"
-          ],
-          "autoGenerate": true
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "weatherForFirstDay",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `dataTime` INTEGER NOT NULL, `icon` TEXT, `description` TEXT, `maxTemp` REAL, `minTemp` REAL, `humidity` INTEGER, `pressure` REAL, `wind` REAL)",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
           },
           {
-            "fieldPath": "dt",
-            "columnName": "dataTime",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "icon",
-            "columnName": "icon",
+            "fieldPath": "city",
+            "columnName": "city",
             "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "description",
-            "columnName": "description",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "maxTemp",
-            "columnName": "maxTemp",
-            "affinity": "REAL",
-            "notNull": false
-          },
-          {
-            "fieldPath": "minTemp",
-            "columnName": "minTemp",
-            "affinity": "REAL",
-            "notNull": false
-          },
-          {
-            "fieldPath": "humidity",
-            "columnName": "humidity",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "pressure",
-            "columnName": "pressure",
-            "affinity": "REAL",
-            "notNull": false
-          },
-          {
-            "fieldPath": "wind",
-            "columnName": "wind",
-            "affinity": "REAL",
             "notNull": false
           }
         ],
@@ -143,7 +81,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"c3ac3d6dcee8aa7b1b9b95702f817b16\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"03e839a28a696a9a08f30648261e9668\")"
     ]
   }
 }

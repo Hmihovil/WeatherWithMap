@@ -1,15 +1,17 @@
-package com.example.progforce.Data;
+package com.example.progforce.data;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-import com.example.progforce.Network.net.WeatherDay;
+import com.example.progforce.network.net.City;
+import com.example.progforce.network.net.WeatherDay;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 @Entity(tableName = "weather")
-public class WeatherDB {
+public class WeatherDB implements Serializable {
 
    @PrimaryKey(autoGenerate = true)
    private int id;
@@ -38,16 +40,17 @@ public class WeatherDB {
    @ColumnInfo(name = "wind")
    private Double wind;
 
-   public static WeatherDB from(WeatherDay weatherDay){
+    @ColumnInfo(name = "city")
+   private String city;
+
+   public static WeatherDB from(WeatherDay weatherDay, String city){
        return new WeatherDB(weatherDay.getDt(), weatherDay.getWeather().get(0).getIcon(), weatherDay.getWeather().get(0).getDescription(),
        weatherDay.getMain().getTempMax(),weatherDay.getMain().getTempMin(),weatherDay.getMain().getHumidity(),
-               weatherDay.getMain().getPressure(),weatherDay.getWind().getSpeed());
-
+               weatherDay.getMain().getPressure(),weatherDay.getWind().getSpeed(), city);
 
    }
 
-
-    public WeatherDB(long dt, String icon, String description, Double maxTemp, Double minTemp, Integer humidity, Double pressure, Double wind) {
+    public WeatherDB(long dt, String icon, String description, Double maxTemp, Double minTemp, Integer humidity, Double pressure, Double wind, String city) {
         this.id = id;
         this.dt = dt;
         this.icon = icon;
@@ -57,6 +60,7 @@ public class WeatherDB {
         this.humidity = humidity;
         this.pressure = pressure;
         this.wind = wind;
+        this.city = city;
     }
 
     public int getId() {
@@ -131,6 +135,14 @@ public class WeatherDB {
         this.wind = wind;
     }
 
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     @Override
     public String toString() {
         return "WeatherDB{" +
@@ -143,6 +155,7 @@ public class WeatherDB {
                 ", humidity=" + humidity +
                 ", pressure=" + pressure +
                 ", wind=" + wind +
+                ", city="+city+
                 '}';
     }
     public Calendar getDate() {

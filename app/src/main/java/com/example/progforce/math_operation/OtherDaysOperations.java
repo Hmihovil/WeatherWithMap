@@ -1,6 +1,6 @@
-package com.example.progforce.MathOperations;
+package com.example.progforce.math_operation;
 
-import com.example.progforce.Data.WeatherDB;
+import com.example.progforce.data.WeatherDB;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,12 +32,10 @@ public class OtherDaysOperations {
         Integer day5 = day1 + 4;
 
         for (WeatherDB weatherDay : resp) {
-
             checkEveryDay(weatherDay, day2, weatherForDayTwo, maxTempsDayTwo, minTempsDayTwo);
             checkEveryDay(weatherDay, day3, weatherForDayThree, maxTempsDayThree, minTempsDayThree);
             checkEveryDay(weatherDay, day4, weatherForDayFour, maxTempsDayFour, minTempsDayFour);
             checkEveryDay(weatherDay, day5, weatherForDayFive, maxTempsDayFive, minTempsDayFive);
-
         }
 
         setEveryDay(maxTempsDayTwo, minTempsDayTwo, weatherForDayTwo,finaList );

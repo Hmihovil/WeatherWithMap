@@ -1,19 +1,10 @@
 package com.example.progforce;
 
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
-
-import butterknife.BindView;
 
 public class InsideActivity extends AppCompatActivity {
     TextView dateView;
@@ -29,11 +20,11 @@ public class InsideActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inside);
-        StartParams();
-        GetInfo();
+        startParams();
+        getInfo();
     }
 
-    public void StartParams(){
+    public void startParams(){
         dateView = findViewById(R.id.date);
         descriptionView = findViewById(R.id.weather_description);
         maxTempView = findViewById(R.id.high_temperature);
@@ -44,7 +35,8 @@ public class InsideActivity extends AppCompatActivity {
         windView = findViewById(R.id.wind_measurement);
     }
 
-    public void GetInfo(){
+    public void getInfo(){
+
         String dayCount = getIntent().getExtras().getString("dayCount");
         String icon = getIntent().getExtras().getString("icon");
         Integer tempMax = getIntent().getExtras().getInt("tempMax");
@@ -53,12 +45,12 @@ public class InsideActivity extends AppCompatActivity {
         Integer pressure = getIntent().getExtras().getInt("pressure");
         Integer wind = getIntent().getExtras().getInt("wind");
         String description = getIntent().getExtras().getString("description");
-        MakeView(dayCount,icon,tempMax,tempMin,humidity,pressure,wind,description);
+        makeView(dayCount,icon,tempMax,tempMin,humidity,pressure,wind,description);
     }
 
-    public void MakeView(String dayCount, String icon,
+    public void makeView(String dayCount, String icon,
                          Integer tempMax, Integer tempMin, Integer humidity, Integer pressure,
-                        Integer wind, String description ){
+                         Integer wind, String description ){
         dateView.setText(dayCount);
         descriptionView.setText(description);
         maxTempView.setText(tempMax.toString()+"°");

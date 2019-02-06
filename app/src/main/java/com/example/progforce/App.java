@@ -2,7 +2,7 @@ package com.example.progforce;
 
 import android.app.Application;
 import android.arch.persistence.room.Room;
-import com.example.progforce.Data.AppDatabase;
+import com.example.progforce.data.AppDatabase;
 
 public class App extends Application {
 

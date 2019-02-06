@@ -1,9 +1,10 @@
-package com.example.progforce.Network.net2;
+package com.example.progforce.network.net;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Wind {
+
     @SerializedName("speed")
     @Expose
     private Double speed;
@@ -14,5 +15,12 @@ public class Wind {
 
     public void setSpeed(Double speed) {
         this.speed = speed;
+    }
+
+    @Override
+    public String toString() {
+        return "Wind{" +
+                "speed=" + speed +
+                '}';
     }
 }

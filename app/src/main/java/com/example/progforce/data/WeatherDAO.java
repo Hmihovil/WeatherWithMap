@@ -1,4 +1,4 @@
-package com.example.progforce.Data;
+package com.example.progforce.data;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
@@ -7,11 +7,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
-import com.example.progforce.Network.net.Weather;
-
 import java.util.List;
-
-import static android.icu.text.MessagePattern.ArgType.SELECT;
 
 @Dao
 public interface WeatherDAO {
@@ -22,18 +18,16 @@ public interface WeatherDAO {
     @Query("SELECT * FROM weather")
     WeatherDB  getFirstElement();
 
-    @Query("SELECT * FROM weather")
+    @Query("SELECT * FROM weather ")
     LiveData<List<WeatherDB>> allFavoriteWeathers();
 
-//    @Query("SELECT * FROM human")
-//    Flowable<List<HumanEntity>> allHumansRx();
-//
-//    @Query("UPDATE weather SET favorite = 0")
-//    void removeAllFavorite();
-
+    @Query("SELECT * FROM weather ")
+    LiveData<WeatherDB> favoriteWeathers();
 
     @Insert
     void insert(List<WeatherDB> items);
+    @Insert
+    void insert(WeatherDB item);
 
     @Delete
     void delete(WeatherDB... weathers);
@@ -43,6 +37,4 @@ public interface WeatherDAO {
 
     @Query("DELETE FROM weather")
     void clearWeathers();
-
-
 }

@@ -1,28 +1,22 @@
 package com.example.progforce;
 
-import android.arch.persistence.room.PrimaryKey;
 import android.content.Context;
 import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.progforce.Data.WeatherDB;
-import com.example.progforce.Data.WeatherDBforFirstDay;
-import com.example.progforce.MathOperations.FirstDayViewOperations;
-import com.example.progforce.MathOperations.Operations;
-import com.example.progforce.MathOperations.OtherDaysOperations;
-import com.example.progforce.Network.WeatherAPI;
-import com.example.progforce.Network.net.WeatherDay;
-import com.example.progforce.Network.net.WeatherList;
-import com.example.progforce.Network.net2.WeatherDayForCity;
-import com.example.progforce.Network.net2.WeatherListTwo;
+import com.example.progforce.data.WeatherDAO;
+import com.example.progforce.data.WeatherDB;
+import com.example.progforce.math_operation.Operations;
+import com.example.progforce.network.WeatherAPI;
+import com.example.progforce.network.net.WeatherDay;
+import com.example.progforce.network.net.WeatherList;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -39,7 +33,8 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class OneDayActivity extends AppCompatActivity {
-
+    private final WeatherDAO weatherDAO = App.db.weatherDAO();
+    WeatherAPI.ApiInterface api;
     TextView dateView;
     TextView descriptionView;
     TextView maxTempView;
@@ -48,7 +43,6 @@ public class OneDayActivity extends AppCompatActivity {
     TextView humidityView;
     TextView pressureView;
     TextView windView;
-    WeatherAPI.ApiInterface api;
     ProgressBar loadingIndicator;
     String city;
     LinearLayout emptyView;
@@ -59,66 +53,68 @@ public class OneDayActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_one_day);
         Intent intent = getIntent();
         city = intent.getExtras().getString("City");
-        StartParams();
-        OffAllView();
+        startParams();
+
         loadingIndicator.setVisibility(VISIBLE);
+        offAllView();
         api = WeatherAPI.getClient().create(WeatherAPI.ApiInterface.class);
         getWeather(this);
-
+        weatherDAO.favoriteWeathers().observe(this, this::processFirstWeather);
     }
 
     public void getWeather(Context context) {
         String units = "metric";
         String key = WeatherAPI.KEY;
-
         Log.d(TAG, "OK");
 
-        Call<WeatherListTwo> callForecast = api.getTownWeather(city, units, key);
-        callForecast.enqueue(new Callback<WeatherListTwo>() {
+        Call<WeatherList> callForecast = api.getTownWeather(city, units, key);
+        callForecast.enqueue(new Callback<WeatherList>() {
 
             @Override
-            public void onResponse(@NonNull Call<WeatherListTwo> call, @NonNull Response<WeatherListTwo> response) {
+            public void onResponse(@NonNull Call<WeatherList> call, @NonNull Response<WeatherList> response) {
 
-                List<WeatherDayForCity> listFromRetrofit = response.body().getItems();
-                if (listFromRetrofit.isEmpty()){
-                    OnEmptyView();
-                    loadingIndicator.setVisibility(GONE);
-                }else{
-                Log.i("ПОГОДАААА", listFromRetrofit.toString());
-                List<WeatherDayForCity> list = new ArrayList<>();
+                List<WeatherDB> entities = new ArrayList<>();
                 List<Double> maxTemp = new ArrayList<>();
                 List<Double> minTemp = new ArrayList<>();
-                for (WeatherDayForCity weatherDay : response.body().getItems()) {
-                    list.add(weatherDay);
+                for (WeatherDay weatherDay : response.body().getItems()) {
+                    entities.add(WeatherDB.from(weatherDay, city));
                     maxTemp.add(weatherDay.getMain().getTempMax());
                     minTemp.add(weatherDay.getMain().getTempMin());
                 }
-                WeatherDayForCity printcity = response.body().getItems().get(0);
-                printcity.getMain().setTempMin(Collections.min(minTemp));
-                printcity.getMain().setTempMax(Collections.max(maxTemp));
                 Log.e(TAG, "onResponse");
-                GetInfo(printcity);
-                OnWeatherView();
-                loadingIndicator.setVisibility(GONE);}
 
+                WeatherDB printcity = entities.get(0);
+                printcity.setMinTemp(Collections.min(minTemp));
+                printcity.setMaxTemp(Collections.max(maxTemp));
+                Log.e(TAG, "onResponse");
+                getInfo(printcity);
+                weatherDAO.clearWeathers();
+                weatherDAO.insert(printcity);
+                onWeatherView();
+                loadingIndicator.setVisibility(GONE);
             }
 
-
             @Override
-            public void onFailure(Call<WeatherListTwo> call, Throwable t) {
+            public void onFailure(Call<WeatherList> call, Throwable t) {
                 Log.e(TAG, "onFailure");
                 Log.e(TAG, t.toString());
-                OnNoConnectionView();
-                loadingIndicator.setVisibility(GONE);
+                List<WeatherDB> db = weatherDAO.allWeathersBlocking();
+                if(db.isEmpty()){
+                    loadingIndicator.setVisibility(GONE);
+                    onNoConnectionView();
+                }else {
+                    onVisibleView();
+                }
             }
         });
     }
 
-    public void StartParams(){
+    public void startParams(){
         dateView = findViewById(R.id.date);
         descriptionView = findViewById(R.id.weather_description);
         maxTempView = findViewById(R.id.high_temperature);
@@ -134,25 +130,25 @@ public class OneDayActivity extends AppCompatActivity {
         noConnectionView = findViewById(R.id.no_connection_view);
     }
 
-    public void GetInfo(WeatherDayForCity weatherDayForCity){
+    public void getInfo(WeatherDB weatherDayForCity){
 
         String dayOfWeek = Operations.getDayOfWeek(weatherDayForCity.getDate().get(Calendar.DAY_OF_WEEK));
         String dayOfMoth = Operations.getMoth(weatherDayForCity.getDate().get(Calendar.MONTH));
         Integer number = weatherDayForCity.getDate().get(Calendar.DAY_OF_MONTH);
-        String city = weatherDayForCity.getName();
-        String dayCount = dayOfWeek + " " + number.toString() + " " + dayOfMoth +", "+city;
-        String icon = weatherDayForCity.getWeather().get(0).getIcon();
-        Integer tempMax = weatherDayForCity.getMain().getTempMax().intValue();
-        Integer tempMin = weatherDayForCity.getMain().getTempMin().intValue();
-        Integer humidity = weatherDayForCity.getMain().getHumidity();
-        Integer pressure = weatherDayForCity.getMain().getPressure().intValue();
-        Integer wind = weatherDayForCity.getWind().getSpeed().intValue();
-        String description = weatherDayForCity.getWeather().get(0).getDescription();
+        String city = weatherDayForCity.getCity();
+        String dayCount = dayOfWeek + " " + number.toString() + " " + dayOfMoth+", "+city;
+        String icon = weatherDayForCity.getIcon();
+        Integer tempMax = weatherDayForCity.getMaxTemp().intValue();
+        Integer tempMin = weatherDayForCity.getMinTemp().intValue();
+        Integer humidity = weatherDayForCity.getHumidity();
+        Integer pressure = weatherDayForCity.getPressure().intValue();
+        Integer wind = weatherDayForCity.getWind().intValue();
+        String description = weatherDayForCity.getDescription();
 
-        MakeView(dayCount,icon,tempMax,tempMin,humidity,pressure,wind,description);
+        makeView(dayCount,icon,tempMax,tempMin,humidity,pressure,wind,description);
     }
 
-    public void MakeView(String dayCount, String icon,
+    public void makeView(String dayCount, String icon,
                          Integer tempMax, Integer tempMin, Integer humidity, Integer pressure,
                          Integer wind, String description ){
         dateView.setText(dayCount);
@@ -165,37 +161,42 @@ public class OneDayActivity extends AppCompatActivity {
         windView.setText(wind.toString()+" km/h");
     }
 
-    public void OnEmptyView(){
+    public void onEmptyView(){
         up.setVisibility(GONE);
         down.setVisibility(GONE);
         emptyView.setVisibility(VISIBLE);
         noConnectionView.setVisibility(GONE);
     }
 
-    public void OffEmptyView(){
-        up.setVisibility(VISIBLE);
-        down.setVisibility(VISIBLE);
-        emptyView.setVisibility(GONE);
-    }
-
-    public void OffAllView(){
+    public void offAllView(){
         up.setVisibility(GONE);
         down.setVisibility(GONE);
         emptyView.setVisibility(GONE);
         noConnectionView.setVisibility(GONE);
     }
 
-    public void OnWeatherView(){
+    public void onWeatherView(){
         up.setVisibility(VISIBLE);
         down.setVisibility(VISIBLE);
         emptyView.setVisibility(GONE);
         noConnectionView.setVisibility(GONE);
     }
-    public void OnNoConnectionView(){
+    public void onNoConnectionView(){
         up.setVisibility(GONE);
         down.setVisibility(GONE);
         emptyView.setVisibility(GONE);
         noConnectionView.setVisibility(VISIBLE);
+    }
 
+    private void processFirstWeather(WeatherDB weatherDBS) {
+        if (!weatherDBS.equals(null)||!weatherDBS.equals("")||weatherDBS != null) {
+            getInfo(weatherDBS);
+        }
+    }
+    public void onVisibleView(){
+        weatherDAO.allFavoriteWeathers();
+        loadingIndicator.setVisibility(GONE);
+        up.setVisibility(VISIBLE);
+        down.setVisibility(VISIBLE);
     }
 }

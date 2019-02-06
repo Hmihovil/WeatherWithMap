@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.progforce.Data.WeatherDB;
-import com.example.progforce.MathOperations.Operations;
+import com.example.progforce.data.WeatherDB;
+import com.example.progforce.math_operation.Operations;
 import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
@@ -108,5 +108,4 @@ public class WeatherDayAdapter extends RecyclerView.Adapter<WeatherDayAdapter.We
             ButterKnife.bind(this, viewItem);
         }
     }
-
 }

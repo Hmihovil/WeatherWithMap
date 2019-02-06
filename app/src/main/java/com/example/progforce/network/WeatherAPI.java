@@ -1,10 +1,7 @@
-package com.example.progforce.Network;
+package com.example.progforce.network;
 
-import com.example.progforce.Network.net.City;
-import com.example.progforce.Network.net.WeatherDay;
-import com.example.progforce.Network.net.WeatherList;
-import com.example.progforce.Network.net2.WeatherListTwo;
-
+import com.example.progforce.network.net.ListWithCity;
+import com.example.progforce.network.net.WeatherList;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -17,16 +14,9 @@ public class WeatherAPI {
     private static Retrofit retrofit = null;
 
     public interface ApiInterface {
-        @GET("weather")
-        Call<WeatherDay> getToday(
-                @Query("lat") Double lat,
-                @Query("lon") Double lon,
-                @Query("units") String units,
-                @Query("appid") String appid
-        );
 
         @GET("forecast")
-        Call<WeatherList> getForecast(
+        Call<ListWithCity> getForecast(
                 @Query("lat") Double lat,
                 @Query("lon") Double lon,
                 @Query("units") String units,
@@ -34,13 +24,11 @@ public class WeatherAPI {
         );
 
         @GET("find")
-        Call<WeatherListTwo> getTownWeather(
+        Call<WeatherList> getTownWeather(
                 @Query("q" ) String city,
                 @Query("units") String units,
                 @Query("appid") String appid
-
         );
-
     }
 
     public static Retrofit getClient() {
@@ -52,5 +40,4 @@ public class WeatherAPI {
         }
         return retrofit;
     }
-
 }

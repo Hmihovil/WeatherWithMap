@@ -1,12 +1,13 @@
-package com.example.progforce.Network.net2;
+package com.example.progforce.network.net;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class Main {
 
+    @SerializedName("temp")
+    @Expose
+    private Double temp;
     @SerializedName("temp_min")
     @Expose
     private Double tempMin;
@@ -23,6 +24,14 @@ public class Main {
     @SerializedName("weather")
     @Expose
     private java.util.List<Weather> weather = null;
+
+    public Double getTemp() {
+        return temp;
+    }
+
+    public void setTemp(Double temp) {
+        this.temp = temp;
+    }
 
     public Double getTempMin() {
         return tempMin;
@@ -56,11 +65,23 @@ public class Main {
         this.humidity = humidity;
     }
 
-    public List<Weather> getWeather() {
+    public java.util.List<Weather> getWeather() {
         return weather;
     }
 
-    public void setWeather(List<Weather> weather) {
+    public void setWeather(java.util.List<Weather> weather) {
         this.weather = weather;
+    }
+
+    @Override
+    public String toString() {
+        return "Main{" +
+                "temp=" + temp +
+                ", tempMin=" + tempMin +
+                ", tempMax=" + tempMax +
+                ", pressure=" + pressure +
+                ", humidity=" + humidity +
+                ", weather=" + weather +
+                '}';
     }
 }

@@ -1,9 +1,10 @@
-package com.example.progforce.Network.net2;
+package com.example.progforce.network.net;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Weather {
+
     @SerializedName("description")
     @Expose
     private String description;
@@ -20,11 +21,21 @@ public class Weather {
     }
 
     public String getIcon() {
-        return icon;
+        return "http://openweathermap.org/img/w/" + icon + ".png";
     }
 
     public void setIcon(String icon) {
         this.icon = icon;
     }
 
+    @Override
+    public String toString() {
+        return "Weather{" +
+                "description='" + description + '\'' +
+                ", icon='" + icon + '\'' +
+                '}';
+    }
 }
+
+
+
